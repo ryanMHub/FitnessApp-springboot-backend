@@ -1,6 +1,6 @@
 package com.ryanmhub.fitnessapp.exception;
 
-import com.ryanmhub.fitnessapp.common.ApiResponse;
+import com.ryanmhub.fitnessapp.common.models.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

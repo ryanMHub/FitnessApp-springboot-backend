@@ -1,4 +1,4 @@
-package com.ryanmhub.fitnessapp.common;
+package com.ryanmhub.fitnessapp.common.models;
 
 public class ApiResponse {
 

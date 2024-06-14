@@ -1,4 +1,4 @@
-package com.ryanmhub.fitnessapp.auth;
+package com.ryanmhub.fitnessapp.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

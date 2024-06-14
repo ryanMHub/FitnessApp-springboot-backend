@@ -1,10 +1,10 @@
-package com.ryanmhub.fitnessapp.auth;
+package com.ryanmhub.fitnessapp.auth.controller;
 
-import com.ryanmhub.fitnessapp.common.ApiResponse;
-import com.ryanmhub.fitnessapp.user.UserDTO;
+import com.ryanmhub.fitnessapp.auth.service.AuthService;
+import com.ryanmhub.fitnessapp.auth.dto.LoginDTO;
+import com.ryanmhub.fitnessapp.common.models.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
