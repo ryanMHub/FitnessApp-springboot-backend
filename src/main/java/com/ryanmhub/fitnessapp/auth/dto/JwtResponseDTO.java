@@ -1,5 +1,7 @@
 package com.ryanmhub.fitnessapp.auth.dto;
 
+
+//Todo: How are we going to transfer the required information. I'm not sure if this is needed
 public class JwtResponseDTO {
 
     private String token;

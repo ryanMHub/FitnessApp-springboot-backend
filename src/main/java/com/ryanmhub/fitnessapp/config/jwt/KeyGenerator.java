@@ -1,4 +1,4 @@
-package com.ryanmhub.fitnessapp.auth.jwt;
+package com.ryanmhub.fitnessapp.config.jwt;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

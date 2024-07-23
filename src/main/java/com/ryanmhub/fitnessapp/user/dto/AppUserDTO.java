@@ -29,7 +29,7 @@ public class AppUserDTO {
 
     @NotBlank
     @Size(max = 255)
-    private String password;
+    private String password; //Todo: should this be encoded before it is being transferred from the client
 
     //constructors
     public AppUserDTO() {

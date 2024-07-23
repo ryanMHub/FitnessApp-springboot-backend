@@ -1,5 +1,6 @@
-package com.ryanmhub.fitnessapp.common.models;
+package com.ryanmhub.fitnessapp.common.response;
 
+//Todo: Probably not needed
 public class ApiResponse {
 
     private boolean success;

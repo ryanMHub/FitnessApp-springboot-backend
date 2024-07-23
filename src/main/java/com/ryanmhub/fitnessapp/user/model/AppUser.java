@@ -1,19 +1,25 @@
 package com.ryanmhub.fitnessapp.user.model;
 
-import com.ryanmhub.fitnessapp.user.repository.AppUserRoleRepository;
+import com.ryanmhub.fitnessapp.role.model.UserRole;
+import com.ryanmhub.fitnessapp.role.repository.UserRoleRepository;
+import com.ryanmhub.fitnessapp.token.Token;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-
+//Todo: Add role into the Builder
 //The User Entity will contain all of the authorization and registration of the user. The profile will be handled in a separate table.
 @Entity
 @Table(name = "users")
@@ -60,22 +66,85 @@ public class AppUser implements UserDetails {
     @Column(name="enabled", nullable = false)
     private boolean isEnabled;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Token> tokens;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRole> roles;
+
     //constructors
     public AppUser() {
     }
 
-    public AppUser(String firstName, String lastName, String username, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    public AppUser(Builder builder) {
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.username = builder.username;
+        this.email = builder.email;
+        this.password = builder.password;
         this.notExpired = true;
         this.notLocked = true;
         this.isEnabled = true;
     }
 
-    //getters and setters *I'm going to leave out the setter for Id right now
+    public static class Builder{
+        private String firstName;
+        private String lastName;
+        private String username;
+        private String email;
+        private String password;
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder username(String username){
+            this.username = username;
+            return this;
+        }
+
+        public Builder email(String email){
+            this.email = email;
+            return this;
+        }
+
+        public Builder password(String password){
+            this.password = password;
+            return this;
+        }
+
+        public AppUser build(){
+            return new AppUser(this);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(roles != null){
+            return roles.stream().map(userRole -> new SimpleGrantedAuthority("ROLE_" + userRole.getRole().getName())).collect(Collectors.toSet());
+        }
+        return Collections.emptySet();
+    }
+
+    //Used to return the roles in string value to store in the JWT
+    @Transactional(readOnly = true)
+    public List<String> getRolesNames(){
+        if(roles != null){
+            return roles.stream()
+                    .map(role -> "ROLE_" + role.getRole().getName())
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    //Getters
     public Long getId() {
         return id;
     }
@@ -92,45 +161,41 @@ public class AppUser implements UserDetails {
         return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    @Transient
-    private AppUserRoleRepository userRoleRepository;
-
     public String getEmail() {
         return email;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(userRoleRepository != null){
-            List<AppUserRole> roles = userRoleRepository.findByUsername(this.username);
-            return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole())).collect(Collectors.toList());
-        }
-        return List.of();
     }
 
     public String getPassword() {
         return password;
     }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return notExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return notLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    } //Todo: This is not handled or stored anywhere
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    //Todo: Should I remove this
+    @Transactional(readOnly = true)
+    public List<UserRole> getRoles() {
+        return roles;
+    }
+
+    //Setters
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -164,15 +229,15 @@ public class AppUser implements UserDetails {
         isEnabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "User{" +
+//                "id=" + id +
+//                ", firstName='" + firstName + '\'' +
+//                ", lastName='" + lastName + '\'' +
+//                ", username='" + username + '\'' +
+//                ", email='" + email + '\'' +
+//                ", password='" + password + '\'' +
+//                '}';
+//    }
 }

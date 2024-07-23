@@ -1,4 +1,4 @@
-package com.ryanmhub.fitnessapp.auth.jwt;
+package com.ryanmhub.fitnessapp.config.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
-
+    //Todo: I'm not sure if this is needed anymore
     //***********What do I do about the ServletException********************
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {

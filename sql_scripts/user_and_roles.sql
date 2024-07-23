@@ -22,15 +22,35 @@ CREATE TABLE roles (
 );
 
 -- Insert a default role
-INSERT INTO roles (name) VALUES ('ROLE_USER');
+INSERT INTO roles (name) VALUES ('GUEST');
+INSERT INTO roles (name) VALUES ('USER');
+INSERT INTO roles (name) VALUES ('ADMIN');
 
 -- Create the user_roles table with foreign key constraints
+USE fitness_app;
+
 CREATE TABLE user_roles (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    role VARCHAR(50) NOT NULL,
+    user_ID BIGINT NOT NULL,
+    role_ID BIGINT NOT NULL,
     -- Ensure username exists in users table and delete corresponding user_roles on user deletion
-    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     -- Ensure role exists in roles table and delete corresponding user_roles on role deletion
-    FOREIGN KEY (role) REFERENCES roles(name) ON DELETE CASCADE
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+);
+
+-- Create the Token table
+USE fitness_app;
+
+CREATE TABLE Token (
+   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   token VARCHAR(2048) NOT NULL,
+   tokenType VARCHAR(50) NOT NULL DEFAULT 'BEARER',
+   revoked BOOLEAN NOT NULL,
+   expired BOOLEAN NOT NULL,
+   user_id BIGINT,  -- Foreign key to the Users table
+   CONSTRAINT fk_user
+       FOREIGN KEY (user_id)
+           REFERENCES Users(id)
+           ON DELETE CASCADE
 );

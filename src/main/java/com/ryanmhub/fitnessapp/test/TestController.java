@@ -1,6 +1,6 @@
 package com.ryanmhub.fitnessapp.test;
 
-import com.ryanmhub.fitnessapp.common.models.ApiResponse;
+import com.ryanmhub.fitnessapp.common.response.ApiResponse;
 import com.ryanmhub.fitnessapp.user.model.AppUser;
 import com.ryanmhub.fitnessapp.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
