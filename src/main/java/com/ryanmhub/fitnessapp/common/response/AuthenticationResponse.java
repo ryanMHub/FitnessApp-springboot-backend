@@ -2,25 +2,27 @@ package com.ryanmhub.fitnessapp.common.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AuthenticationResponse {
+public class AuthenticationResponse extends ApiResponse{
 
     @JsonProperty("access_token")
     private String accessToken;
     @JsonProperty("refreshToken")
     private String refreshToken;
-    @JsonProperty("message")
-    private String message;
 
-    private AuthenticationResponse(Builder builder){
+    protected AuthenticationResponse(Builder builder){
+        super(builder);
         this.accessToken = builder.accessToken;
         this.refreshToken = builder.refreshToken;
-        this.message = builder.message;
     }
 
-    public static class Builder {
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    public static class Builder extends ApiResponse.Builder<Builder>{
         private String accessToken = "";
         private String refreshToken = "";
-        private String message = "";
 
         public Builder accessToken(String accessToken) {
             this.accessToken = accessToken;
@@ -29,11 +31,6 @@ public class AuthenticationResponse {
 
         public Builder refreshToken(String refreshToken) {
             this.refreshToken = refreshToken;
-            return this;
-        }
-
-        public Builder message(String message) {
-            this.message = message;
             return this;
         }
 

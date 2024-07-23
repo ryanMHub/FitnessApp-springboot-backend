@@ -4,6 +4,8 @@ import com.ryanmhub.fitnessapp.common.response.ApiResponse;
 import com.ryanmhub.fitnessapp.user.model.AppUser;
 import com.ryanmhub.fitnessapp.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +19,9 @@ public class TestController {
     private UserService userService;
 
     @GetMapping("/print")
-    private ApiResponse displaySomething(Authentication authentication){
+    private ResponseEntity<ApiResponse> displaySomething(Authentication authentication){
         String username = authentication.getName();
         AppUser user = userService.findByUsernameOrEmail(username).orElse(null);
-        return new ApiResponse(true, user.toString());
+        return new ResponseEntity<>(ApiResponse.builder().success(true).message("Test Complete: " + user.toString()).build(), HttpStatus.OK);
     }
 }

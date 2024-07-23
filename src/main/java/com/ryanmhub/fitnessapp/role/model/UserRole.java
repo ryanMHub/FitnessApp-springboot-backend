@@ -32,10 +32,6 @@ public class UserRole {
         private AppUser user;
         private Role role;
 
-        public Builder(){
-
-        }
-
         public Builder user(AppUser user){
             this.user = user;
             return this;

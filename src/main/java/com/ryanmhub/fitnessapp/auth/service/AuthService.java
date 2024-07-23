@@ -2,6 +2,8 @@ package com.ryanmhub.fitnessapp.auth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ryanmhub.fitnessapp.auth.dto.LoginDTO;
+import com.ryanmhub.fitnessapp.common.response.ApiResponse;
+import com.ryanmhub.fitnessapp.common.response.RegistrationResponse;
 import com.ryanmhub.fitnessapp.config.jwt.JwtService;
 import com.ryanmhub.fitnessapp.common.response.AuthenticationResponse;
 import com.ryanmhub.fitnessapp.role.model.Role;
@@ -59,7 +61,7 @@ public class AuthService {
     private EntityManager entityManager;
 
     //Todo: ON exception return response that username or password were wrong. Don't be specific
-    public ResponseEntity<AuthenticationResponse> authenticateUser(LoginDTO loginDTO){
+    public ResponseEntity<ApiResponse> authenticateUser(LoginDTO loginDTO){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getUsernameOrEmail(),
@@ -74,20 +76,20 @@ public class AuthService {
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken); //Todo: this should probably be switched with the refresh token. Meaning we should save the refresh token to the server. Not the access Token.
 
-        return new ResponseEntity<>(new AuthenticationResponse.Builder().accessToken(jwtToken).refreshToken(refreshToken).message("Authorized").build(), HttpStatus.OK);
+        return new ResponseEntity<>(AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken).message("Authorized").success(true).build(), HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<AuthenticationResponse> registerUser(AppUserDTO userDTO){
+    public ResponseEntity<ApiResponse> registerUser(AppUserDTO userDTO){
 
         //The first two if statements determine if the username or email has already been used. If it has return IM_USED response to client
         if(userRepository.existsByUsername(userDTO.getUsername())) {
-            return new ResponseEntity<>(new AuthenticationResponse.Builder().message("Username is already taken!").build(), HttpStatus.IM_USED); //Todo: Should this be passed to the client??? And how would I do that
+            return new ResponseEntity<>(RegistrationResponse.builder().success(false).message("Username is already taken!").build(), HttpStatus.IM_USED); //Todo: Should this be passed to the client??? And how would I do that
         }
 
         //Todo: Check that password is strong enough. Maybe this should be handled only on the client side.
         if(userRepository.existsByEmail(userDTO.getEmail())) {
-            return new ResponseEntity<>(new AuthenticationResponse.Builder().message("Email Address already in use!").build(), HttpStatus.IM_USED); //Todo: Same as above. As well as any other data that is needed from the user at registration
+            return new ResponseEntity<>(RegistrationResponse.builder().success(false).message("Email Address already in use!").build(), HttpStatus.IM_USED); //Todo: Same as above. As well as any other data that is needed from the user at registration
         }
 
         //after determining that the username and email are not already in use build the user entity
@@ -104,25 +106,7 @@ public class AuthService {
         var userRole = new UserRole.Builder().role(roleName).user(savedUser).build(); //Create a new UserRole using the newly created user entity. And the Role give by the new user. Todo: get role from client
         userRoleRepository.save(userRole); //save new UserRole that links the user to the type of role to the UserRole table in the database
 
-
-
-        //System.out.println(savedUser);
-        //System.out.println(savedUser.getRolesNames());
-        //System.out.println(userRoleRepository.findByUserId(1L));
-        entityManager.flush();
-
-        savedUser = userRepository.findById(savedUser.getId()).orElse(new AppUser());
-        Hibernate.initialize(savedUser.getRoles());
-        System.out.println(savedUser.getRoles());
-        //Todo: Test to see if calling the authentication method from within the register method will pass the approriate roles to the token
-//        var jwtToken = jwtService.generateJwtToken(Map.of("roles", jwtService.serializeObject(savedUser.getRolesNames())), savedUser); //Generate the access token with the user roles
-//        var refreshToken = jwtService.generateRefreshToken(user); //Generate the refresh token
-//        //Todo: when is the token being inserted into the scurity context.
-//        saveUserToken(savedUser, jwtToken); //Todo: this should probably be switched with the refresh token. Meaning we should save the refresh token to the server. Not the access Token.
-
-        return authenticateUser(new LoginDTO(userDTO.getUsername(), userDTO.getPassword()));
-
-//        return new ResponseEntity<>(new AuthenticationResponse.Builder().accessToken(jwtToken).refreshToken(refreshToken).message("User registered successfully").build(), HttpStatus.OK); //Todo: This needs to be passed to the Client once the user is registered
+        return new ResponseEntity<>(RegistrationResponse.builder().success(true).message("User registered successfully").build(), HttpStatus.OK); //Todo: This needs to be passed to the Client once the user is registered
     }
 
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

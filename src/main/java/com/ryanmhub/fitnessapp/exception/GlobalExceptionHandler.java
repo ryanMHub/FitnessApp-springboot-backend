@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
     //Generates a response with message and status based on the derivative of the AuthenticationException
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<AuthenticationResponse> handleAuthenticationException(AuthenticationException ex){
+    public ResponseEntity<ApiResponse> handleAuthenticationException(AuthenticationException ex){
         String responseMessage;
         HttpStatus status;
 
@@ -44,19 +44,17 @@ public class GlobalExceptionHandler {
             status = HttpStatus.UNAUTHORIZED;
         }
 
-        return new ResponseEntity<>(new AuthenticationResponse.Builder().message(responseMessage).build(), status);
+        return new ResponseEntity<>(new AuthenticationResponse.Builder().message(responseMessage).success(false).build(), status);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericException(Exception ex){
-        ApiResponse response = new ApiResponse(false, "An error occurred: " + ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ApiResponse.builder().success(false).message("An error occurred: " + ex.getMessage()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(JsonProcessingException.class)
     public ResponseEntity<ApiResponse> handleJsonProcessingException(JsonProcessingException ex){
-        ApiResponse response = new ApiResponse(false, "An error occurred: " + ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ApiResponse.builder().success(false).message("An error occurred: " + ex.getMessage()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

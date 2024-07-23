@@ -2,6 +2,7 @@ package com.ryanmhub.fitnessapp.auth.controller;
 
 import com.ryanmhub.fitnessapp.auth.service.AuthService;
 import com.ryanmhub.fitnessapp.auth.dto.LoginDTO;
+import com.ryanmhub.fitnessapp.common.response.ApiResponse;
 import com.ryanmhub.fitnessapp.common.response.AuthenticationResponse;
 import com.ryanmhub.fitnessapp.user.dto.AppUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,14 +25,15 @@ public class AuthController {
     private AuthService authService;
 
     //Todo: This response needs to be routed to the client
+    //Todo: Switch the ResponseEntity to ApiResponse and have all api responses extend that class
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticateUser(@Valid @RequestBody LoginDTO loginDTO){
+    public ResponseEntity<ApiResponse> authenticateUser(@Valid @RequestBody LoginDTO loginDTO){
         return authService.authenticateUser(loginDTO);
     }
 
     //Register new user endpoint
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> registerUser(@Valid @RequestBody AppUserDTO userDTO){
+    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody AppUserDTO userDTO){
         return authService.registerUser(userDTO);
     }
 

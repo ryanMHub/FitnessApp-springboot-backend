@@ -29,8 +29,6 @@ public class Role {
     public static class Builder {
         private String name;
 
-        public Builder(){}
-
         public Builder name(String name){
             this.name = name;
             return this;
