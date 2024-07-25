@@ -34,10 +34,9 @@ public class JwtService {
     @Value("${jwt.refresh-expiration}")
     private long jwtRefreshExpiration;
 
-    //Todo: Double check appears I have this code twice Alternative is getSignInKey()
-    private SecretKey getSecretKey() {
-        byte[] decodedKey = Base64.getDecoder().decode(jwtSecret);
-        return Keys.hmacShaKeyFor(decodedKey);
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateJwtToken(UserDetails userDetails){
@@ -63,7 +62,7 @@ public class JwtService {
                 .setSubject((userDetails.getUsername()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(getSecretKey(), SignatureAlgorithm.HS512)
+                .signWith(getSignInKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -142,11 +141,6 @@ public class JwtService {
             .build()
             .parseClaimsJws(token)
             .getBody();
-    }
-
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails){

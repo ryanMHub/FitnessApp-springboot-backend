@@ -20,8 +20,6 @@ import java.io.IOException;
 
 import static com.ryanmhub.fitnessapp.token.TokenType.BEARER;
 
-
-//*********************************************************I/m going to have to fix this class I can tell*********************************************************
 @Component
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
@@ -39,7 +37,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
-    ) throws ServletException, IOException { //Todo; How should I handle exceptions Should I log exceptions
+    ) throws ServletException, IOException { //Todo; How should I handle exceptions. Should I log exceptions and error messages.
 
         if(request.getServletPath().contains("/api/auth")){
             filterChain.doFilter(request, response);
@@ -48,17 +46,16 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String jwt;
-        //Todo: should the system.out.println for error messages be in a log
 
         if(authHeader == null || !authHeader.startsWith(BEARER.getPrefix())) {
             System.out.println("authHeader null or Does not start with 'Bearer'");
-            filterChain.doFilter(request, response); //Todo: What happens if this section fails
+            filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authHeader.substring(7);
 
-        var isTokenValid = tokenRepository.findByToken(jwt) //Todo: maybe I still want to check the token or maybe store refresh token.
+        var isTokenValid = tokenRepository.findByToken(jwt)
                 .map(t -> !t.isExpired() && !t.isRevoked())
                 .orElse(false);
 
@@ -74,7 +71,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
         //Todo: is the SecurityContext being recreated every request? Make sure when logging out or token is no longer valid to clear securityContext
         if(user != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken( //Todo: Cache the userDetails so that the DB isn't being bogged down
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     user.getUsername(),
                     user.getPassword(),
                     user.getAuthorities()
