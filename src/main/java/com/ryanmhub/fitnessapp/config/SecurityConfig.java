@@ -31,13 +31,15 @@ public class SecurityConfig {
             "/api/auth/refresh-token"
     };
 
-    //Todo: switch the Autowired to the constructor mechanism
-    @Autowired
-    private JwtAuthTokenFilter jwtAuthTokenFilter;
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
-    @Autowired
-    private LogoutHandler logoutHandler;
+    private final JwtAuthTokenFilter jwtAuthTokenFilter;
+    private final AuthenticationProvider authenticationProvider;
+    private final LogoutHandler logoutHandler;
+
+    public SecurityConfig(JwtAuthTokenFilter jwtAuthTokenFilter, AuthenticationProvider authenticationProvider, LogoutHandler logoutHandler) {
+        this.jwtAuthTokenFilter = jwtAuthTokenFilter;
+        this.authenticationProvider = authenticationProvider;
+        this.logoutHandler = logoutHandler;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{

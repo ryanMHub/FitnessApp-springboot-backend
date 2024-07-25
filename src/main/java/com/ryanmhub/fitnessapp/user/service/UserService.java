@@ -21,14 +21,14 @@ public class UserService {
         return userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
     }
 
-    //Todo: Will I need to change this approach
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        AppUser user = findByUsernameOrEmail(usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
-        String[] roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .roles(roles) //Todo: Figure out a way to modify roles most appropriately
-                .build();
-    }
+    //Not Currently Using
+//    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+//        AppUser user = findByUsernameOrEmail(usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
+//        String[] roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
+//        return org.springframework.security.core.userdetails.User.builder()
+//                .username(user.getUsername())
+//                .password(user.getPassword())
+//                .roles(roles)
+//                .build();
+//    }
 }

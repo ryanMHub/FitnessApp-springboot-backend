@@ -48,7 +48,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String jwt;
-        //Todo: Should I resort back //final String username;
+        //Todo: should the system.out.println for error messages be in a log
 
         if(authHeader == null || !authHeader.startsWith(BEARER.getPrefix())) {
             System.out.println("authHeader null or Does not start with 'Bearer'");
@@ -57,28 +57,23 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
+
+        var isTokenValid = tokenRepository.findByToken(jwt) //Todo: maybe I still want to check the token or maybe store refresh token.
+                .map(t -> !t.isExpired() && !t.isRevoked())
+                .orElse(false);
+
+        if(!isTokenValid){
+            System.out.println("token is not valid");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         UserDetails user = jwtService.loadUserWithToken(jwt);
         System.out.println(user);
-        //username = jwtService.getUserNameFromJwtToken(jwt);
+
 
         //Todo: is the SecurityContext being recreated every request? Make sure when logging out or token is no longer valid to clear securityContext
         if(user != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            //Todo: Revert back?
-//            var isTokenValid = tokenRepository.findByToken(jwt) //Todo: maybe I still want to check the token or maybe store refresh token.
-//                    .map(t -> !t.isExpired() && !t.isRevoked())
-//                    .orElse(false);
-//            if(jwtService.isTokenValid(jwt, userDetails) && isTokenValid){
-//                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken( //Todo: Cache the userDetails so that the DB isn't being bogged down, Using only the token can be a solution
-//                        userDetails,
-//                        null,
-//                        userDetails.getAuthorities()
-//                );
-//                authToken.setDetails(
-//                        new WebAuthenticationDetailsSource().buildDetails(request)
-//                );
-//                SecurityContextHolder.getContext().setAuthentication(authToken);
-//            }
-
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken( //Todo: Cache the userDetails so that the DB isn't being bogged down
                     user.getUsername(),
                     user.getPassword(),

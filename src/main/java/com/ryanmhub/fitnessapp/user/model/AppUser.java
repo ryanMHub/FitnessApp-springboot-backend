@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//Todo: Add role into the Builder
 //The User Entity will contain all of the authorization and registration of the user. The profile will be handled in a separate table.
 @Entity
 @Table(name = "users")
@@ -182,21 +181,14 @@ public class AppUser implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
-    } //Todo: This is not handled or stored anywhere
+    }
 
     @Override
     public boolean isEnabled() {
         return isEnabled;
     }
 
-    //Todo: Should I remove this
-    @Transactional(readOnly = true)
-    public List<UserRole> getRoles() {
-        return roles;
-    }
-
     //Setters
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
