@@ -18,9 +18,9 @@ public class DataInitialization {
     @Bean
     CommandLineRunner init(){
         return args -> {
-            roleService.createRoleIfNotFound("GUEST");
-            roleService.createRoleIfNotFound("USER");
-            roleService.createRoleIfNotFound("ADMIN");
+            roleService.createRoleIfNotFound("ROLE_GUEST");
+            roleService.createRoleIfNotFound("ROLE_USER");
+            roleService.createRoleIfNotFound("ROLE_ADMIN");
         };
     }
 }

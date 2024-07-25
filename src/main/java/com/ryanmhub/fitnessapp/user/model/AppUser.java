@@ -128,7 +128,7 @@ public class AppUser implements UserDetails {
     @Transactional(readOnly = true)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(roles != null){
-            return roles.stream().map(userRole -> new SimpleGrantedAuthority("ROLE_" + userRole.getRole().getName())).collect(Collectors.toSet());
+            return roles.stream().map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getName())).collect(Collectors.toSet());
         }
         return Collections.emptySet();
     }
@@ -138,7 +138,7 @@ public class AppUser implements UserDetails {
     public List<String> getRolesNames(){
         if(roles != null){
             return roles.stream()
-                    .map(role -> "ROLE_" + role.getRole().getName())
+                    .map(role -> role.getRole().getName())
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
