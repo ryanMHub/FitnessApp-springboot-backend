@@ -106,7 +106,6 @@ public class JwtService {
     public User loadUserWithToken(String jwtToken){
         try{
             Claims claims = extractAllClaims(jwtToken);
-            //Todo: check if token is revoked
             if(isTokenExpired(claims)) {
                 //Todo: Expired token response
                 //System.out.println("Expired Token");
