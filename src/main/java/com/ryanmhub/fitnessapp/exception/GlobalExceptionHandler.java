@@ -2,7 +2,7 @@ package com.ryanmhub.fitnessapp.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ryanmhub.fitnessapp.common.response.ApiResponse;
-import com.ryanmhub.fitnessapp.common.response.AuthenticationResponse;
+import com.ryanmhub.fitnessapp.auth.response.AuthenticationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;

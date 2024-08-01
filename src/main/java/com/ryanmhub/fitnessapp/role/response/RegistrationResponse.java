@@ -1,4 +1,6 @@
-package com.ryanmhub.fitnessapp.common.response;
+package com.ryanmhub.fitnessapp.role.response;
+
+import com.ryanmhub.fitnessapp.common.response.ApiResponse;
 
 public class RegistrationResponse extends ApiResponse {
     //Todo: What additional uses do I have for this instead of using simple ApiResponse

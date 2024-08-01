@@ -3,7 +3,6 @@ package com.ryanmhub.fitnessapp.auth.controller;
 import com.ryanmhub.fitnessapp.auth.service.AuthService;
 import com.ryanmhub.fitnessapp.auth.dto.LoginDTO;
 import com.ryanmhub.fitnessapp.common.response.ApiResponse;
-import com.ryanmhub.fitnessapp.common.response.AuthenticationResponse;
 import com.ryanmhub.fitnessapp.user.dto.AppUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +33,7 @@ public class AuthController {
     //Register new user endpoint
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody AppUserDTO userDTO){
+        System.out.println("/register Received request from client");
         return authService.registerUser(userDTO);
     }
 
@@ -43,6 +43,7 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
+        System.out.println("/refresh-token Received request from client");
         authService.refreshToken(request, response);
     }
 }

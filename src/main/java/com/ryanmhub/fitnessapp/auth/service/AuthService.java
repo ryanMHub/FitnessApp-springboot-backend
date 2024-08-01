@@ -3,9 +3,9 @@ package com.ryanmhub.fitnessapp.auth.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ryanmhub.fitnessapp.auth.dto.LoginDTO;
 import com.ryanmhub.fitnessapp.common.response.ApiResponse;
-import com.ryanmhub.fitnessapp.common.response.RegistrationResponse;
+import com.ryanmhub.fitnessapp.role.response.RegistrationResponse;
 import com.ryanmhub.fitnessapp.config.jwt.JwtService;
-import com.ryanmhub.fitnessapp.common.response.AuthenticationResponse;
+import com.ryanmhub.fitnessapp.auth.response.AuthenticationResponse;
 import com.ryanmhub.fitnessapp.role.model.Role;
 import com.ryanmhub.fitnessapp.role.model.UserRole;
 import com.ryanmhub.fitnessapp.role.repository.RoleRepository;
@@ -18,22 +18,18 @@ import com.ryanmhub.fitnessapp.user.repository.AppUserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.ryanmhub.fitnessapp.token.TokenType.BEARER;
 

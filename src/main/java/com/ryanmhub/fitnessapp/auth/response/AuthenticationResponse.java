@@ -1,12 +1,13 @@
-package com.ryanmhub.fitnessapp.common.response;
+package com.ryanmhub.fitnessapp.auth.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ryanmhub.fitnessapp.common.response.ApiResponse;
 
-public class AuthenticationResponse extends ApiResponse{
+public class AuthenticationResponse extends ApiResponse {
 
     @JsonProperty("access_token")
     private String accessToken;
-    @JsonProperty("refreshToken")
+    @JsonProperty("refresh_token")
     private String refreshToken;
 
     protected AuthenticationResponse(Builder builder){
