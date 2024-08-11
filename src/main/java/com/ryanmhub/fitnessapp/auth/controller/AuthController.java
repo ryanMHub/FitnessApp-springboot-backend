@@ -39,11 +39,11 @@ public class AuthController {
 
     //Allows Client to Refresh tokens
     @PostMapping("/refresh-token")
-    public void refreshToken(
+    public ResponseEntity<ApiResponse> refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
         System.out.println("/refresh-token Received request from client");
-        authService.refreshToken(request, response);
+        return authService.refreshToken(request, response);
     }
 }

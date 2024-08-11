@@ -105,26 +105,27 @@ public class AuthService {
         return new ResponseEntity<>(RegistrationResponse.builder().success(true).message("User registered successfully").build(), HttpStatus.OK); //Todo: This needs to be passed to the Client once the user is registered
     }
 
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<ApiResponse> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String username;
         if(authHeader == null || !authHeader.startsWith(BEARER.getPrefix())){
-            return;
+            return new ResponseEntity<>(AuthenticationResponse.builder().success(false).message("Invalid Header").build(), HttpStatus.UNAUTHORIZED); //Todo: Maybe I should use OK
         }
         refreshToken = authHeader.substring(7);
         username = jwtService.extractUsername(refreshToken);
-        if(username != null) {
-            //Todo: Should we get the user based on the current user accessing the endpoint. Not based on the username in the token. Then compare the token to the current user.
-            var user = this.userRepository.findByUsernameOrEmail(username, username).orElseThrow(); //Todo: Handle this exception
-            if(jwtService.isTokenValid(refreshToken, user)){
-                var accessToken = jwtService.generateJwtToken(user);
-                revokeAllUserTokens(user);
-                saveUserToken(user, accessToken);
-                var authResponse = new AuthenticationResponse.Builder().accessToken(accessToken).refreshToken(refreshToken).build();
-                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
-            }
-        }
+        if(username == null) return new ResponseEntity<>(AuthenticationResponse.builder().success(false).message("Invalid Refresh Token").build(), HttpStatus.UNAUTHORIZED);
+
+        //Todo: Should we get the user based on the current user accessing the endpoint. Not based on the username in the token. Then compare the token to the current user.
+        var user = this.userRepository.findByUsernameOrEmail(username, username).orElseThrow(); //Todo: Handle this exception
+        if(!jwtService.isTokenValid(refreshToken, user)) return new ResponseEntity<>(AuthenticationResponse.builder().success(false).message("Invalid Refresh Token").build(), HttpStatus.UNAUTHORIZED);
+
+        var accessToken = jwtService.generateJwtToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, accessToken);
+        saveUserToken(user, refreshToken);
+
+        return new ResponseEntity<>(AuthenticationResponse.builder().success(true).message("Access Token Refreshed").build(), HttpStatus.OK);
     }
 
     //private Service Utility functions
@@ -140,6 +141,7 @@ public class AuthService {
         tokenRepository.saveAll(validTokens);
     }
 
+    //Todo: Should this be somewhere else
     private void saveUserToken(AppUser user, String jwtToken){
         var token = new Token.Builder()
                 .user(user)
