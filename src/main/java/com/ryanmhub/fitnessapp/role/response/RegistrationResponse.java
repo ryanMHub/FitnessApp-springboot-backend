@@ -2,8 +2,9 @@ package com.ryanmhub.fitnessapp.role.response;
 
 import com.ryanmhub.fitnessapp.common.response.ApiResponse;
 
+//Custom response for registration
 public class RegistrationResponse extends ApiResponse {
-    //Todo: What additional uses do I have for this instead of using simple ApiResponse
+
     protected RegistrationResponse(Builder builder){
         super(builder);
     }

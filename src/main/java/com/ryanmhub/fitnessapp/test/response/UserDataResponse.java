@@ -30,6 +30,7 @@ public class UserDataResponse extends ApiResponse {
     public static Builder builder(){
         return new Builder();
     }
+
     public static class Builder extends ApiResponse.Builder<Builder> {
 
         private String firstName = "";

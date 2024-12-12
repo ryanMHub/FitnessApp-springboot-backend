@@ -15,9 +15,12 @@ import static com.ryanmhub.fitnessapp.token.TokenType.BEARER;
 @Service
 public class LogoutService implements LogoutHandler {
 
-    //Todo: Set in a Constructor
-    @Autowired
-    private TokenRepository tokenRepository;
+
+    private final TokenRepository tokenRepository;
+
+    public LogoutService(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
 
     @Override
     public void logout(
@@ -43,6 +46,5 @@ public class LogoutService implements LogoutHandler {
             tokenRepository.save(storedToken);
             SecurityContextHolder.clearContext();
         }
-        //Todo: How should I handle if storedToken is null
     }
 }

@@ -55,7 +55,6 @@ public class JwtService {
         return buildToken(claims, userDetails, jwtRefreshExpiration);
     }
 
-    //Todo: When and where should I insert Bearer
     private String buildToken(Map<String, Object> claims, UserDetails userDetails, long jwtExpirationMs) {
         return Jwts.builder()
                 .setClaims(claims)

@@ -1,22 +1,16 @@
 package com.ryanmhub.fitnessapp.config;
 
 import com.ryanmhub.fitnessapp.config.jwt.JwtAuthTokenFilter;
-import com.ryanmhub.fitnessapp.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -33,12 +27,12 @@ public class SecurityConfig {
 
     private final JwtAuthTokenFilter jwtAuthTokenFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final LogoutHandler logoutHandler;
+    private final LogoutService logoutService;
 
-    public SecurityConfig(JwtAuthTokenFilter jwtAuthTokenFilter, AuthenticationProvider authenticationProvider, LogoutHandler logoutHandler) {
+    public SecurityConfig(JwtAuthTokenFilter jwtAuthTokenFilter, AuthenticationProvider authenticationProvider, LogoutService logoutService) {
         this.jwtAuthTokenFilter = jwtAuthTokenFilter;
         this.authenticationProvider = authenticationProvider;
-        this.logoutHandler = logoutHandler;
+        this.logoutService = logoutService;
     }
 
     @Bean
@@ -55,9 +49,12 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/api/auth/logout")
-                                .addLogoutHandler(logoutHandler)
-                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                        //Todo: client needs a response to know what to do next so it can redirect to the login screen
+                                .addLogoutHandler(logoutService)
+                                .logoutSuccessHandler((request, response, authentication) -> {
+                                    response.setContentType("application/json");
+                                    response.setStatus(HttpServletResponse.SC_OK);
+                                    response.getWriter().write("{\"message\":\"Logout Successful\",\"success\":true, \"logout_info\":\"It worked\"}");
+                                })
                 );
 
         return http.build();

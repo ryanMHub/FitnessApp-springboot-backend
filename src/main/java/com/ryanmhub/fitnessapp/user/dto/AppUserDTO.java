@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 //done with the base info of the user.
 public class AppUserDTO {
 
-    //*********************Do I need to include the id number****************************
 
     @NotBlank
     @Size(max = 40)
@@ -29,7 +28,7 @@ public class AppUserDTO {
 
     @NotBlank
     @Size(max = 255)
-    private String password; //Todo: should this be encoded before it is being transferred from the client
+    private String password;
 
     //constructors
     public AppUserDTO() {
