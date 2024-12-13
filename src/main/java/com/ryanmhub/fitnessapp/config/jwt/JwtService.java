@@ -75,8 +75,6 @@ public class JwtService {
     }
 
     //Converts 'roles' claim from json to List<String> using Jackson
-    //Todo: handle exception. Go through all methods to determine if any throw an exception that needs to be resolved
-    //Todo: There is probably a better way to do this
     public List<String> getRoles(Claims claims){
         try{
             ObjectMapper mapper = new ObjectMapper();
@@ -106,7 +104,6 @@ public class JwtService {
         try{
             Claims claims = extractAllClaims(jwtToken);
             if(isTokenExpired(claims)) {
-                //Todo: Expired token response
                 //System.out.println("Expired Token");
                 return null;
             }
@@ -120,7 +117,6 @@ public class JwtService {
             //System.out.println(authorities);
             return new User(username, "", authorities);
         } catch (Exception ex){
-            //Todo: Is a return message needed?
             System.out.println("JWT not Valid From claims extraction");
             return null;
         }
@@ -131,7 +127,6 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    //Todo: handle error
     private Claims extractAllClaims(String token){
         return Jwts
             .parserBuilder()

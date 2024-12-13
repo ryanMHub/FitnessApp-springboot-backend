@@ -1,9 +1,8 @@
 package com.ryanmhub.fitnessapp.common.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.security.authentication.AuthenticationProvider;
 
-//Todo: Probably not needed
+//all response types inherit this base api response
 public class ApiResponse {
 
     @JsonProperty("success")

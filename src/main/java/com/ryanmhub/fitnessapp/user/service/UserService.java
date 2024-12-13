@@ -23,6 +23,21 @@ public class UserService {
         return userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
     }
 
+    //checks if username is in repository
+    public boolean existsByUsername(String username){
+        return userRepository.existsByUsername(username);
+    }
+
+    //checks if email is in repository
+    public boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
+    }
+
+    //saves user to repository
+    public AppUser saveUser(AppUser user){
+        return userRepository.save(user);
+    }
+
     //Not Currently Using
 //    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 //        AppUser user = findByUsernameOrEmail(usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
